@@ -259,10 +259,11 @@ Create the corresponding tools for the MCP server in the `tools/` directory (e.g
 
 ```python
 # In tools/your_tools.py
+# -*- coding: utf-8 -*-
 """Your tools for the MCP server."""
 
 from mcp.server.fastmcp import Context
-from typing import Dict, Any
+from .utils import format_response
 
 def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
     """Register your tools with the MCP server."""
@@ -273,8 +274,8 @@ def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
         """
         Retrieves the title of the currently open Revit project.
         """
-        ctx.info("Getting project title...")
-        return await revit_get("/your_endpoint/", ctx)
+        response = await revit_get("/your_endpoint/", ctx)
+        return format_response(response)
     
     # ---- Tool for the POST request ----
     @mcp.tool()
@@ -290,14 +291,9 @@ def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
             element_id: The ID of the element to modify.
             new_value: The new comment to apply to the element.
         """
-        try:
-            payload = {"element_id": element_id, "new_value": new_value}
-            ctx.info("Attempting to modify element {}...".format(element_id))
-            return await revit_post("/modify_model/", payload, ctx)
-        except Exception as e:
-            error_msg = "Error during tool execution: {}".format(str(e))
-            ctx.error(error_msg)
-            return error_msg
+        payload = {"element_id": element_id, "new_value": new_value}
+        response = await revit_post("/modify_model/", payload, ctx)
+        return format_response(response)
 ```
 
 ## Part 3: Register Your New Modules
