@@ -21,11 +21,12 @@ revit-mcp-python/
 ├── main.py                                    # MCP Server (FastMCP implementation)
 ├── tools/                                     # MCP Tool definitions (organized by functionality)
 │   ├── __init__.py                           # Tool registration system
+│   ├── utils.py                              # Utility functions for response formatting
 │   ├── status_tools.py                       # Status and connectivity tools
 │   ├── model_tools.py                        # Model information tools
 │   ├── view_tools.py                         # View export and image tools
-│   └── family_tools.py                       # Family placement and management tools
-|   └── colors_tools.py                       # Color splashing tools
+│   ├── family_tools.py                       # Family placement and management tools
+│   ├── colors_tools.py                       # Color splashing tools
 │   └── code_execution_tools.py               # Code execution tools
 ├── revit-mcp-python.extension/               # pyRevit Extension
 │   ├── startup.py                            # Extension entry point - registers all routes
@@ -59,6 +60,7 @@ revit-mcp-python/
 3. **Tool Registration System (`tools/`)**:
    - Modular tool organization by functionality
    - Central registration through `tools/__init__.py`
+   - Unified response formatting through `tools/utils.py`
    - Each module registers its own tools with the MCP server
 
 ---
@@ -567,10 +569,11 @@ Next, create the corresponding tools for the MCP server. This is what the LLM wi
 
 ```
 # In tools/your_tools.py
+# -*- coding: utf-8 -*-
 """Your tools for the MCP server."""
 
 from mcp.server.fastmcp import Context
-from typing import Dict, Any
+from .utils import format_response
 
 def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
     """Register your tools with the MCP server."""
@@ -581,8 +584,8 @@ def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
         """
         Retrieves the title of the currently open Revit project.
         """
-        ctx.info("Getting project title...")
-        return await revit_get("/your_endpoint/", ctx)
+        response = await revit_get("/your_endpoint/", ctx)
+        return format_response(response)
 
     # ---- Tool for the POST request ----
     @mcp.tool()
@@ -598,14 +601,9 @@ def register_your_tools(mcp, revit_get, revit_post, revit_image=None):
             element_id: The ID of the element to modify.
             new_value: The new comment to apply to the element.
         """
-        try:
-            payload = {"element_id": element_id, "new_value": new_value}
-            ctx.info("Attempting to modify element {}...".format(element_id))
-            return await revit_post("/modify_model/", payload, ctx)
-        except Exception as e:
-            error_msg = "Error during tool execution: {}".format(str(e))
-            ctx.error(error_msg)
-            return error_msg
+        payload = {"element_id": element_id, "new_value": new_value}
+        response = await revit_post("/modify_model/", payload, ctx)
+        return format_response(response)
 
 ```
 
@@ -658,8 +656,6 @@ def register_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func
     
     # Register your new tools (this registers all tools inside)
     register_your_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func)
-
-    return mcp_server
 
 ```
 ---
@@ -719,8 +715,9 @@ The modular architecture provides several extension points:
 - Both will be automatically registered
 
 ### **Custom Helper Functions**
-- Add utility functions to `revit_mcp/utils.py`
-- Import and use in any route module
+- Add utility functions to `revit_mcp/utils.py` for Revit API operations
+- Add response formatting utilities to `tools/utils.py` for MCP tools
+- Import and use in any route or tool module
 
 ### **Advanced Error Handling**
 - All modules include comprehensive error handling
