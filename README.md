@@ -86,47 +86,37 @@ It contains:
 
 ### Installing uv:
 
-**Mac:**
-```bash
-brew install uv
-```
-
-**Windows:**
-```bash
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-set Path=C:\Users\[username]\.local\bin;%Path%
-```
-
-For other platforms, see the [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/).
-
-### Setting Up the Project:
-
-1. Fork or clone the repo: 
-   ```
-   https://github.com/JotaDeRodriguez/simple_revit_mcp
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   # Create virtual environment
-   uv venv
-   
-   # Activate it (Linux/Mac)
-   source .venv/bin/activate
-   
-   # Activate it (Windows)
-   .venv\Scripts\activate
-   
-   # Install requirements
-   uv pip install -r requirements.txt
-   ```
+> Refer to ./README_UV.md
 
 ## Installing the Extension on Revit
 
+# Activate pyRevit Routes
+
 1. In Revit, navigate to the pyRevit tab
 2. Open Settings
-3. Under "Custom Extensions", add the path to the `.extension` folder from this repo
-4. Save settings and reload pyRevit (you might need to restart Revit entirely)
+3. Go to `Routes` > activate `Routes Server`
+pyRevit will start listening on port `http://localhost:48884/`
+
+# Install from pyRevit:
+
+1. In Revit, navigate to the pyRevit tab
+2. Open Extensions
+3. Select the Revit MCP Extension > Install extension
+4. Select location, default is `%APPDATA%\Roaming\pyRevit\Extensions`
+5. Enable and wait for pyRevit to reload. Restart Revit if necessary.
+
+
+# Manual Installation on a custom directory:
+
+1. Clone the repo in a custom location:
+    ```bash
+    git clone https://github.com/JotaDeRodriguez/Bonsai_mcp
+    ```
+2. Add `.extension` to the root folder name
+3. In Revit, navigate to the pyRevit tab
+4. Open Settings
+5. Under "Custom Extensions", add the path to the `.extension` folder
+6. Save settings and reload pyRevit (you might need to restart Revit entirely)
 
 ## Testing Your Connection
 
