@@ -7,6 +7,7 @@ Registers all MCP routes and initializes the API
 from pyrevit import routes
 import logging
 
+##test
 
 logger = logging.getLogger(__name__)
 
