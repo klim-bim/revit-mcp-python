@@ -11,6 +11,7 @@ def register_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func
     from .model_tools import register_model_tools
     from .colors_tools import register_colors_tools
     from .code_execution_tools import register_code_execution_tools
+    from .line_tools import register_line_tools
 
     # Register tools from each module
     register_status_tools(mcp_server, revit_get_func)
@@ -18,6 +19,5 @@ def register_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func
     register_family_tools(mcp_server, revit_get_func, revit_post_func)
     register_model_tools(mcp_server, revit_get_func)
     register_colors_tools(mcp_server, revit_get_func, revit_post_func)
-    register_code_execution_tools(
-        mcp_server, revit_get_func, revit_post_func, revit_image_func
-    )
+    register_code_execution_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func)
+    register_line_tools(mcp_server, revit_get_func, revit_post_func, revit_image_func)

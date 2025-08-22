@@ -7,6 +7,7 @@ Registers all MCP routes and initializes the API
 from pyrevit import routes
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 # Initialize the main API
@@ -40,6 +41,10 @@ def register_routes():
         from revit_mcp.code_execution import register_code_execution_routes
 
         register_code_execution_routes(api)
+
+        from revit_mcp.line_elements import register_line_routes
+
+        register_line_routes(api)
 
         logger.info("All MCP routes registered successfully")
 

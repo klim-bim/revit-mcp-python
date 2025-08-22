@@ -4,8 +4,10 @@ from mcp.server.fastmcp import FastMCP, Image, Context
 import base64
 from typing import Optional, Dict, Any, Union
 
+
 # Create a generic MCP server for interacting with Revit
 mcp = FastMCP("Revit MCP Server")
+
 
 # Configuration
 REVIT_HOST = "localhost"
@@ -59,6 +61,8 @@ async def _revit_call(method: str, endpoint: str, data: Dict = None, ctx: Contex
 # Register all tools BEFORE the main block
 from tools import register_tools
 register_tools(mcp, revit_get, revit_post, revit_image)
+#print("Registered tools:", list(mcp._tools.keys()))
+
 
 
 if __name__ == "__main__":
